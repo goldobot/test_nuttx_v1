@@ -186,20 +186,22 @@ int board_app_initialize(uintptr_t arg)
       return ret;
     }
 #else
-  ret = stm32_qencoder_initialize("/dev/qe0", 3);
+#define QE0_TIM 1
+  ret = stm32_qencoder_initialize("/dev/qe0", QE0_TIM);
   if (ret != OK)
     {
       syslog(LOG_ERR,
-             "ERROR: Failed to register the qencoder: %d\n",
-             ret);
+             "ERROR: Failed to register the qencoder (TIM:%d): %d\n",
+             QE0_TIM, ret);
       return ret;
     }
-  ret = stm32_qencoder_initialize("/dev/qe1", 4);
+#define QE1_TIM 8
+  ret = stm32_qencoder_initialize("/dev/qe1", QE1_TIM);
   if (ret != OK)
     {
       syslog(LOG_ERR,
-             "ERROR: Failed to register the qencoder: %d\n",
-             ret);
+             "ERROR: Failed to register the qencoder (TIM:%d): %d\n",
+             QE1_TIM, ret);
       return ret;
     }
 #endif

@@ -65,7 +65,9 @@ void board_autoled_initialize(void)
 {
   /* Configure LED1 GPIO for output */
 
+#if 0 /* FIXME : DEBUG : on a besoin du PA.5 pour SPI1.SCK */
   stm32_configgpio(GPIO_LED1);
+#endif
 }
 
 /****************************************************************************
@@ -76,7 +78,9 @@ void board_autoled_on(int led)
 {
   if (led == BOARD_LED1)
     {
+#if 0 /* FIXME : DEBUG : on a besoin du PA.5 pour SPI1.SCK */
       stm32_gpiowrite(GPIO_LED1, true);
+#endif
     }
 }
 
@@ -88,7 +92,9 @@ void board_autoled_off(int led)
 {
   if (led == BOARD_LED1)
     {
+#if 0 /* FIXME : DEBUG : on a besoin du PA.5 pour SPI1.SCK */
       stm32_gpiowrite(GPIO_LED1, false);
+#endif
     }
 }
 
