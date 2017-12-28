@@ -56,6 +56,21 @@
 
 #ifdef CONFIG_SPI
 
+/*****************************************************************************
+ * Public Data
+ *****************************************************************************/
+/* Global driver instances */
+
+#ifdef CONFIG_STM32_SPI1
+struct spi_dev_s *g_spi1;
+#endif
+#ifdef CONFIG_STM32_SPI2
+struct spi_dev_s *g_spi2;
+#endif
+#ifdef CONFIG_STM32_SPI3
+struct spi_dev_s *g_spi3;
+#endif
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -64,15 +79,34 @@
  * Name: stm32_spidev_initialize
  *
  * Description:
- *   Called to configure SPI chip select GPIO pins for the board.
+ *   Called to configure SPI device & SPI chip select GPIO pins for the board.
  *
  ****************************************************************************/
 
 void weak_function stm32_spidev_initialize(void)
 {
-#if defined(CONFIG_LCD_SSD1351)
-  (void)stm32_configgpio(GPIO_OLED_CS); /* OLED chip select */
-  (void)stm32_configgpio(GPIO_OLED_DC); /* OLED Command/Data */
+#ifdef CONFIG_STM32_SPI1
+  g_spi1 = stm32_spibus_initialize(1);
+  if (!g_spi1)
+    {
+      spierr("ERROR: FAILED to initialize SPI port 1\n");
+    }
+#endif
+
+#ifdef CONFIG_STM32_SPI2
+  g_spi2 = stm32_spibus_initialize(2);
+  if (!g_spi2)
+    {
+      spierr("ERROR: FAILED to initialize SPI port 2\n");
+    }
+#endif
+
+#ifdef CONFIG_STM32_SPI3
+  g_spi3 = stm32_spibus_initialize(3);
+  if (!g_spi3)
+    {
+      spierr("ERROR: FAILED to initialize SPI port 3\n");
+    }
 #endif
 }
 
