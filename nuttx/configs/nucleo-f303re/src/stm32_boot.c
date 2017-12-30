@@ -48,9 +48,11 @@
 
 #include "nucleo-f303re.h"
 
-/* FIXME : DEBUG : HACK GOLDO */
+#if 1 /* FIXME : DEBUG : HACK GOLDO */
 void stm32_i2c_register(int bus);
 int board_pwm_setup(void);
+extern void stm32_spidev_initialize_goldo(void);
+#endif
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -90,6 +92,9 @@ void stm32_boardinitialize(void)
     {
       stm32_spidev_initialize();
     }
+#if 1 /* FIXME : DEBUG : HACK GOLDO */
+  stm32_spidev_initialize_goldo();
+#endif
 #endif
 
 #ifdef CONFIG_CANUTILS_LIBUAVCAN

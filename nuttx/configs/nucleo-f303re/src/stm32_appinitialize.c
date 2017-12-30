@@ -185,7 +185,7 @@ int board_app_initialize(uintptr_t arg)
              ret);
       return ret;
     }
-#else
+#else /* code pour goldobot */
 #define QE0_TIM 1
   ret = stm32_qencoder_initialize("/dev/qe0", QE0_TIM);
   if (ret != OK)
@@ -205,28 +205,6 @@ int board_app_initialize(uintptr_t arg)
       return ret;
     }
 #endif
-#endif
-
-#if 1 /* FIXME : DEBUG : HACK GOLDO */
-  extern void goldo_maxon2_dir_p(void);
-  extern void goldo_maxon2_dir_n(void);
-  extern void goldo_maxon2_en(void);
-  extern void goldo_maxon2_dis(void);
-  extern void goldo_maxon2_speed(int32_t s);
-  extern void goldo_maxon1_dir_p(void);
-  extern void goldo_maxon1_dir_n(void);
-  extern void goldo_maxon1_en(void);
-  extern void goldo_maxon1_dis(void);
-  extern void goldo_maxon1_speed(int32_t s);
-
-  goldo_maxon1_dis();
-  goldo_maxon2_dis();
-  goldo_maxon2_en();
-  goldo_maxon1_en();
-  goldo_maxon2_speed(0);
-  goldo_maxon1_speed(0);
-  goldo_maxon1_dis();
-  goldo_maxon2_dis();
 #endif
 
   UNUSED(ret);

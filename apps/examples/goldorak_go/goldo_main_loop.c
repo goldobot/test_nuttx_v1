@@ -206,7 +206,7 @@ int main_loop_test_motors(void)
   while(1)
   {
     printf("Pwm left: %i, right: %i\n",pwm_left,pwm_right);
-    printf("(1) Set left motor pwm\n(2) Set right motor_pwm\n(3) Quit\n Enter command: \n");
+    printf("(1) Set left motor pwm\n(2) Set right motor_pwm\n(3) Quit (and disable motors)\n Enter command: \n");
     command = 0;
     readline(buffer,32,stdin,stdout);
     sscanf(buffer,"%d",&command);
@@ -226,6 +226,8 @@ int main_loop_test_motors(void)
           sscanf(buffer,"%d",&pwm_right);
           break;         
       case 3:
+        goldo_asserv_hal_set_motors_pwm(0,0);
+        goldo_asserv_hal_set_motors_enable(false,false);
         return OK;
       default:
         break;

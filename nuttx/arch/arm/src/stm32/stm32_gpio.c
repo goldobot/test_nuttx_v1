@@ -443,6 +443,11 @@ int stm32_configgpio(uint32_t cfgset)
 
   /* Verify that this hardware supports the select GPIO port */
 
+#if 0 /* FIXME : DEBUG : HACK GOLDO */
+  extern int goldo_enable_gpio_log;
+  if (goldo_enable_gpio_log!=0) syslog (LOG_INFO, "DEBUG GOLDO : stm32_configgpio()\n");
+#endif
+
   port = (cfgset & GPIO_PORT_MASK) >> GPIO_PORT_SHIFT;
   if (port >= STM32_NGPIO_PORTS)
     {
@@ -458,6 +463,10 @@ int stm32_configgpio(uint32_t cfgset)
    */
 
   pin = (cfgset & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT;
+
+#if 0 /* FIXME : DEBUG : HACK GOLDO */
+  if (goldo_enable_gpio_log!=0) syslog (LOG_INFO, "DEBUG GOLDO : port=%c pin=%d base=%x\n", 'A'+port, pin, base);
+#endif
 
   /* Set up the mode register (and remember whether the pin mode) */
 
@@ -493,6 +502,8 @@ int stm32_configgpio(uint32_t cfgset)
   regval  = getreg32(base + STM32_GPIO_MODER_OFFSET);
   regval &= ~GPIO_MODER_MASK(pin);
   regval |= ((uint32_t)pinmode << GPIO_MODER_SHIFT(pin));
+  /* FIXME : DEBUG : HACK GOLDO TODO */
+  //_info ("DEBUG GOLDO : putreg32(%x, %x)", regval, base + STM32_GPIO_MODER_OFFSET);
   putreg32(regval, base + STM32_GPIO_MODER_OFFSET);
 
   /* Set up the pull-up/pull-down configuration (all but analog pins) */
@@ -519,6 +530,8 @@ int stm32_configgpio(uint32_t cfgset)
   regval  = getreg32(base + STM32_GPIO_PUPDR_OFFSET);
   regval &= ~GPIO_PUPDR_MASK(pin);
   regval |= (setting << GPIO_PUPDR_SHIFT(pin));
+  /* FIXME : DEBUG : HACK GOLDO TODO */
+  //_info ("DEBUG GOLDO : putreg32(%x, %x)", regval, base + STM32_GPIO_PUPDR_OFFSET);
   putreg32(regval, base + STM32_GPIO_PUPDR_OFFSET);
 
   /* Set the alternate function (Only alternate function pins) */
@@ -546,6 +559,8 @@ int stm32_configgpio(uint32_t cfgset)
   regval  = getreg32(base + regoffset);
   regval &= ~GPIO_AFR_MASK(pos);
   regval |= (setting << GPIO_AFR_SHIFT(pos));
+  /* FIXME : DEBUG : HACK GOLDO TODO */
+  //_info ("DEBUG GOLDO : putreg32(%x, %x)", regval, base + regoffset);
   putreg32(regval, base + regoffset);
 
   /* Set speed (Only outputs and alternate function pins) */
@@ -601,6 +616,8 @@ int stm32_configgpio(uint32_t cfgset)
   regval  = getreg32(base + STM32_GPIO_OSPEED_OFFSET);
   regval &= ~GPIO_OSPEED_MASK(pin);
   regval |= (setting << GPIO_OSPEED_SHIFT(pin));
+  /* FIXME : DEBUG : HACK GOLDO TODO */
+  //_info ("DEBUG GOLDO : putreg32(%x, %x)", regval, base + STM32_GPIO_OSPEED_OFFSET);
   putreg32(regval, base + STM32_GPIO_OSPEED_OFFSET);
 
   /* Set push-pull/open-drain (Only outputs and alternate function pins) */
@@ -618,6 +635,8 @@ int stm32_configgpio(uint32_t cfgset)
       regval &= ~setting;
     }
 
+  /* FIXME : DEBUG : HACK GOLDO TODO */
+  //_info ("DEBUG GOLDO : putreg32(%x, %x)", regval, base + STM32_GPIO_OTYPER_OFFSET);
   putreg32(regval, base + STM32_GPIO_OTYPER_OFFSET);
 
   /* Otherwise, it is an input pin.  Should it configured as an EXTI interrupt? */
@@ -645,6 +664,8 @@ int stm32_configgpio(uint32_t cfgset)
       regval &= ~(SYSCFG_EXTICR_PORT_MASK << shift);
       regval |= (((uint32_t)port) << shift);
 
+      /* FIXME : DEBUG : HACK GOLDO TODO */
+      //_info ("DEBUG GOLDO : putreg32(%x, %x)", regval, regaddr);
       putreg32(regval, regaddr);
     }
 

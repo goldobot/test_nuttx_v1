@@ -2306,23 +2306,17 @@ static int pwm_shutdown(FAR struct pwm_lowerhalf_s *dev)
       defined(CONFIG_STM32_STM32F37XX) || \
       defined(CONFIG_STM32_STM32F40XX) || \
       defined(CONFIG_STM32_STM32L15XX)
+#if 0 /* FIXME : DEBUG : HACK GOLDO : un PWM est tjrs OUT (actif oupas) */
       pincfg |= GPIO_INPUT | GPIO_FLOAT;
+#else
+      pincfg |= GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_OUTPUT_CLEAR;
+#endif
 #else
 #  error "Unrecognized STM32 chip"
 #endif
 
       stm32_configgpio(pincfg);
     }
-
-#if 1 /* FIXME : DEBUG : HACK : GOLDO */
-  /* Robot Goldorak. */
-
-  /* Moteur 1 (droite) */
-  (void)stm32_configgpio(GPIO_MAXON1_PWM_IDDLE);
-
-  /* Moteur 2 (gauche) */
-  (void)stm32_configgpio(GPIO_MAXON2_PWM_IDDLE);
-#endif
 
   return OK;
 }

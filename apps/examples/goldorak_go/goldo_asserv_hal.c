@@ -41,6 +41,14 @@ goldo_asserv_hal_s g_asserv_hal = {false,-1,-1,0,0};
 
 static int fdL, fdR;
 
+void goldo_asserv_hal_reset()
+{
+  g_asserv_hal.initialized = false;
+  g_asserv_hal.fd_left = -1;
+  g_asserv_hal.fd_right = -1;
+  g_asserv_hal.pwm_left = 0;
+  g_asserv_hal.pwm_right = 0;
+}
 
 static int init_devices(void)
 {

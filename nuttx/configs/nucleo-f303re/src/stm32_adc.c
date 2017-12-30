@@ -116,7 +116,11 @@
 /* The number of ADC channels in the conversion list */
 /* TODO DMA */
 
+#if 0 /* FIXME : DEBUG : HACK GOLDO */
 #define ADC1_NCHANNELS 4
+#else /* code pour goldobot */
+#define ADC1_NCHANNELS 2
+#endif
 #define ADC2_NCHANNELS 3
 #define ADC3_NCHANNELS 3
 #define ADC4_NCHANNELS 1
@@ -137,6 +141,7 @@
 
 /* Identifying number of each ADC channel (even if NCHANNELS is less ) */
 
+#if 0 /* FIXME : DEBUG : HACK GOLDO */
 static const uint8_t g_chanlist1[4] =
 {
   1,
@@ -144,9 +149,17 @@ static const uint8_t g_chanlist1[4] =
   6,
   7,
 };
+#else /* code pour goldobot */
+static const uint8_t g_chanlist1[4] =
+{
+  8,
+  9,
+};
+#endif
 
 /* Configurations of pins used by each ADC channel */
 
+#if 0 /* FIXME : DEBUG : HACK GOLDO */
 static const uint32_t g_pinlist1[4]  =
 {
   GPIO_ADC1_IN1,
@@ -154,6 +167,13 @@ static const uint32_t g_pinlist1[4]  =
   GPIO_ADC1_IN6,
   GPIO_ADC1_IN7
 };
+#else /* code pour goldobot */
+static const uint32_t g_pinlist1[4]  =
+{
+  GPIO_ADC1_IN8,
+  GPIO_ADC1_IN9,
+};
+#endif
 
 #elif DEV1_PORT == 2
 

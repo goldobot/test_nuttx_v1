@@ -218,6 +218,7 @@ int goldorak_go_main(int argc, char *argv[])
 #endif
 {
  // int ret;
+  goldo_asserv_hal_reset();
 
   /* Parse the command line */
   parse_args(argc, argv);

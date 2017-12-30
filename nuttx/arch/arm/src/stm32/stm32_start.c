@@ -250,12 +250,25 @@ void __start(void)
   __asm__ volatile ("sub r10, sp, %0" : : "r" (CONFIG_IDLETHREAD_STACKSIZE - 64) : );
 #endif
 
+  /* FIXME : DEBUG : HACK GOLDO */
+  extern int goldo_enable_gpio_log;
+  goldo_enable_gpio_log=0;
+
   /* Configure the UART so that we can get debug output as soon as possible */
 
   stm32_clockconfig();
   stm32_fpuconfig();
   stm32_lowsetup();
   stm32_gpioinit();
+#if 1 /* FIXME : DEBUG */
+  showprogress(0x0a);
+  showprogress('G');
+  showprogress('O');
+  showprogress('L');
+  showprogress('D');
+  showprogress('O');
+  showprogress(0x0a);
+#endif
   showprogress('A');
 
   /* Clear .bss.  We'll do this inline (vs. calling memset) just to be

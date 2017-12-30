@@ -54,6 +54,10 @@
 #include "stm32.h"
 #include "nucleo-f303re.h"
 
+#if 1 /* FIXME : DEBUG : HACK GOLDO */
+extern void up_lowputc(char); /* FIXME : DEBUG */
+#endif
+
 #ifdef CONFIG_SPI
 
 /*****************************************************************************
@@ -61,6 +65,7 @@
  *****************************************************************************/
 /* Global driver instances */
 
+#if 1 /* FIXME : DEBUG : HACK GOLDO */
 #ifdef CONFIG_STM32_SPI1
 struct spi_dev_s *g_spi1;
 #endif
@@ -70,26 +75,31 @@ struct spi_dev_s *g_spi2;
 #ifdef CONFIG_STM32_SPI3
 struct spi_dev_s *g_spi3;
 #endif
+#endif
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
+#if 1 /* FIXME : DEBUG : HACK GOLDO */
 /****************************************************************************
- * Name: stm32_spidev_initialize
+ * Name: stm32_spidev_initialize_goldo
  *
  * Description:
- *   Called to configure SPI device & SPI chip select GPIO pins for the board.
+ *   Called to configure SPI devices for goldobot.
  *
  ****************************************************************************/
 
-void weak_function stm32_spidev_initialize(void)
+void stm32_spidev_initialize_goldo(void)
 {
+  //up_lowputc(0x0a); /* FIXME : DEBUG */
+
 #ifdef CONFIG_STM32_SPI1
   g_spi1 = stm32_spibus_initialize(1);
   if (!g_spi1)
     {
       spierr("ERROR: FAILED to initialize SPI port 1\n");
+      up_lowputc('!'); /* FIXME : DEBUG */
     }
 #endif
 
@@ -98,6 +108,7 @@ void weak_function stm32_spidev_initialize(void)
   if (!g_spi2)
     {
       spierr("ERROR: FAILED to initialize SPI port 2\n");
+      up_lowputc('!'); /* FIXME : DEBUG */
     }
 #endif
 
@@ -106,7 +117,27 @@ void weak_function stm32_spidev_initialize(void)
   if (!g_spi3)
     {
       spierr("ERROR: FAILED to initialize SPI port 3\n");
+      up_lowputc('!'); /* FIXME : DEBUG */
     }
+#endif
+
+  //up_lowputc(0x0a); /* FIXME : DEBUG */
+}
+#endif
+
+/****************************************************************************
+ * Name: stm32_spidev_initialize
+ *
+ * Description:
+ *   Called to configure SPI chip select GPIO pins for the board. (legacy)
+ *
+ ****************************************************************************/
+
+void weak_function stm32_spidev_initialize(void)
+{
+#if defined(CONFIG_LCD_SSD1351)
+  (void)stm32_configgpio(GPIO_OLED_CS); /* OLED chip select */
+  (void)stm32_configgpio(GPIO_OLED_DC); /* OLED Command/Data */
 #endif
 }
 

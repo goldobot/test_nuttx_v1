@@ -2,6 +2,7 @@
 #define __GOLDO_ASSERV_HAL_H__
 #include "goldo_config.h"
 
+void goldo_asserv_hal_reset(void);
 int goldo_asserv_hal_init(void);
 int goldo_asserv_hat_quit(void);
 int goldo_asserv_hal_set_motors_pwm(int left, int right);

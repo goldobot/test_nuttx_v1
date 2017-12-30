@@ -60,6 +60,10 @@
 #if 1 /* FIXME : DEBUG : HACK GOLDO */
 /* FIXME : TODO : create true robot driver */
 
+volatile int goldo_enable_gpio_log;
+
+extern int stm32_dumpgpio(uint32_t pinset, const char *msg);
+
 struct pwm_lowerhalf_s *g_pwm0;
 struct pwm_lowerhalf_s *g_pwm1;
 
@@ -83,11 +87,13 @@ void goldo_maxon2_dir_n(void)
 
 void goldo_maxon2_en(void)
 {
+  //(void)stm32_configgpio(GPIO_TIM2_CH2OUT); /* MAXON2_PWM */
   (void)stm32_configgpio(GPIO_MAXON2_EN);
 }
 
 void goldo_maxon2_dis(void)
 {
+  //(void)stm32_configgpio(GPIO_MAXON2_PWM_IDDLE);
   (void)stm32_configgpio(GPIO_MAXON2_DIS);
 }
 
@@ -120,11 +126,13 @@ void goldo_maxon1_dir_n(void)
 
 void goldo_maxon1_en(void)
 {
+  //(void)stm32_configgpio(GPIO_TIM3_CH2OUT); /* MAXON1_PWM */
   (void)stm32_configgpio(GPIO_MAXON1_EN);
 }
 
 void goldo_maxon1_dis(void)
 {
+  //(void)stm32_configgpio(GPIO_MAXON1_PWM_IDDLE);
   (void)stm32_configgpio(GPIO_MAXON1_DIS);
 }
 
@@ -344,6 +352,17 @@ int stm32_pwm_setup(void)
 
       goldo_maxon1_speed(0);
       goldo_maxon2_speed(0);
+
+#if 0 /* FIXME : DEBUG */
+      stm32_dumpgpio(GPIO_MAXON1_PWM_IDDLE, "RIGHT PWM in stm32_pwm_setup");
+      stm32_dumpgpio(GPIO_MAXON2_PWM_IDDLE, "LEFT PWM in stm32_pwm_setup");
+#endif
+
+      /* FIXME : TODO : trouver l'endroit approprie pour ce setting */
+      goldo_enable_gpio_log=1;
+
+      (void)stm32_configgpio(GPIO_MAXON1_PWM_IDDLE);
+      (void)stm32_configgpio(GPIO_MAXON2_PWM_IDDLE);
 
       /* Now we are initialized */
 
