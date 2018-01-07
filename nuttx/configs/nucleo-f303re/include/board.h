@@ -220,7 +220,7 @@
 
 /* Alternate function pin selections ****************************************/
 
-/* GPIO "generalistes" * V1 OK **********************************************/
+/* GPIO "generalistes" ******************************************************/
 
 #define GPIO_GPIO_IN_C9   (GPIO_INPUT|GPIO_FLOAT|GPIO_PULLUP| \
                            GPIO_PORTC|GPIO_PIN9)  /* PC.9 */
@@ -234,6 +234,7 @@
                            GPIO_PORTC|GPIO_PIN6)  /* PC.6 */
 #define GPIO_GPIO_OUT_C6  (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz| \
                            GPIO_OUTPUT_SET|GPIO_PORTC|GPIO_PIN6)
+/* /!\ ATTENTION : GPIO_C13 connecte au bouton bleu de la carte Nucleo */
 #define GPIO_GPIO_IN_C13  (GPIO_INPUT|GPIO_FLOAT|GPIO_PULLUP| \
                            GPIO_PORTC|GPIO_PIN13) /* PC.13 */
 #define GPIO_GPIO_OUT_C13 (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz| \
@@ -252,22 +253,24 @@
 #define GPIO_GOLDO_OBSTACLE GPIO_GPIO_IN_C8
 
 
-/* CAN * V1 OK **************************************************************/
+/* CAN **********************************************************************/
 
 #define GPIO_CAN1_RX GPIO_CAN_RX_2 /* PA.11 */
 #define GPIO_CAN1_TX GPIO_CAN_TX_2 /* PA.12 */
 
 
-/* I2C * V1 OK **************************************************************/
+/* I2C **********************************************************************/
 
 #define GPIO_I2C1_SCL GPIO_I2C1_SCL_3 /* PB.8 */
 #define GPIO_I2C1_SDA GPIO_I2C1_SDA_3 /* PB.9 */
 
+#if 0 /* FIXME : TODO : virer (conf AVANT ECO Jean) */
 #define GPIO_I2C2_SCL GPIO_I2C2_SCL_2 /* PF.1 */
 #define GPIO_I2C2_SDA GPIO_I2C2_SDA_2 /* PF.0 */
+#endif
 
 
-/* SPI * V1 OK **************************************************************/
+/* SPI **********************************************************************/
 
 #define GPIO_SPI1_MISO GPIO_SPI1_MISO_1 /* PA.6 */
 #define GPIO_SPI1_MOSI GPIO_SPI1_MOSI_1 /* PA.7 */
@@ -281,37 +284,49 @@
 
 #define GPIO_SPI3_MISO GPIO_SPI3_MISO_1 /* PB.4 */
 #define GPIO_SPI3_MOSI GPIO_SPI3_MOSI_1 /* PB.5 */
+#if 0 /* FIXME : TODO : virer (conf AVANT ECO Jean) */
 #define GPIO_SPI3_SCK  GPIO_SPI3_SCK_1  /* PB.3 */
+#else
+#define GPIO_SPI3_SCK  GPIO_SPI3_SCK_2  /* PC.10 */
+#endif
 //#define GPIO_SPI3_NSS  GPIO_SPI3_NSS_2  /* PA.4 */
 
 
-/* TIM (timers generalistes) * V1 OK ****************************************/
+/* TIM (timers generalistes) ************************************************/
 
+#if 0 /* FIXME : TODO : virer (conf AVANT ECO Jean) */
+/* PA.13 pris par le JTAG ds la conf de Jean */
 #define GPIO_TIM4_CH3OUT GPIO_TIM4_CH3OUT_1 /* PA.13 */
 #define GPIO_TIM4_CH3_DISABLE (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz| \
                                GPIO_OUTPUT_CLEAR|GPIO_PORTA|GPIO_PIN13)
 
+/* PB.7 pris par le QEI2_CH_A ds la conf de Jean */
 #define GPIO_TIM4_CH2OUT GPIO_TIM4_CH2OUT_2 /* PB.7 */
 #define GPIO_TIM4_CH2_DISABLE (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz| \
                                GPIO_OUTPUT_CLEAR|GPIO_PORTB|GPIO_PIN7)
 
+/* PB.6 pris par le QEI2_CH_B ds la conf de Jean */
 #define GPIO_TIM4_CH1OUT GPIO_TIM4_CH1OUT_2 /* PB.6 */
 #define GPIO_TIM4_CH1_DISABLE (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz| \
                                GPIO_OUTPUT_CLEAR|GPIO_PORTB|GPIO_PIN6)
+#endif
 
+/* FIXME : TODO : on peut garder T3.4 ici (pour le routage des pins ) mais on 
+   pourra pas l'utiliser avec notre version de Nuttx (pas de support du 
+   multichan PWM). TODO : trouver une solution.. */
 #define GPIO_TIM3_CH4OUT GPIO_TIM3_CH4OUT_2 /* PB.1 */
 #define GPIO_TIM3_CH4_DISABLE (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_50MHz| \
                                GPIO_OUTPUT_CLEAR|GPIO_PORTB|GPIO_PIN1)
 
 
 /* FIXME : TODO : temporaire pour compatibilite avec le code 2017 */
-#define GPIO_PUMP1_PWM_IDDLE GPIO_TIM4_CH1_DISABLE
-#define GPIO_PUMP2_PWM_IDDLE GPIO_TIM4_CH1_DISABLE
-/* FIXME : TODO : ne pas oublier d'associer PWM_POMPE1 avec T4.1 et 
-   PWM_POMPE2 avec T4.1 (voir configs/nucleo-f303re/src/stm32_pwm.c) */
+#define GPIO_PUMP1_PWM_IDDLE GPIO_TIM3_CH4_DISABLE
+#define GPIO_PUMP2_PWM_IDDLE GPIO_TIM3_CH4_DISABLE
+/* FIXME : TODO : ne pas oublier d'associer PWM_POMPE1 avec T3.4 et 
+   PWM_POMPE2 avec T3.4 (voir configs/nucleo-f303re/src/stm32_pwm.c) */
 
 
-/* U(S)ART * V1 OK **********************************************************/
+/* U(S)ART ******************************************************************/
 
 /* USART servo Dynamixel */
 #define GPIO_USART1_RX GPIO_USART1_RX_1     /* PA.10 */
@@ -328,9 +343,12 @@
 #define GPIO_USART3_RX GPIO_USART3_RX_1     /* PB.11 */
 #define GPIO_USART3_TX GPIO_USART3_TX_1     /* PB.10 */
 
+#if 0 /* FIXME : TODO : virer (conf AVANT ECO Jean) */
+/* UART4 disparait dans la conf de Jean */
 /* UART4 */
 //#define GPIO_UART4_RX GPIO_UART4_RX       /* PC.11 */
 //#define GPIO_UART4_TX GPIO_UART4_TX       /* PC.10 */
+#endif
 
 /* UART5 */
 //#define GPIO_UART5_RX GPIO_UART5_RX       /* PD.2 */
@@ -393,9 +411,16 @@
 #define GPIO_TIM1_CH2IN  GPIO_TIM1_CH2IN_2  /* PA.9 */
 #define GPIO_TIM1_CH1IN  GPIO_TIM1_CH1IN_2  /* PA.8 */
 
+#if 0 /* FIXME : TODO : virer (conf AVANT ECO Jean) */
+/* PA.14 pris par le JTAG ds la conf de Jean */
+/* PA.15 pris par le JTAG ds la conf de Jean */
 /* GAUCHE */
 #define GPIO_TIM8_CH1IN  GPIO_TIM8_CH1IN_1  /* PA.15 */
 #define GPIO_TIM8_CH2IN  GPIO_TIM8_CH2IN_3  /* PA.14 */
+#else
+#define GPIO_TIM4_CH1IN  GPIO_TIM4_CH1IN_2  /* PB.6 */
+#define GPIO_TIM4_CH2IN  GPIO_TIM4_CH2IN_2  /* PB.7 */
+#endif
 
 
 

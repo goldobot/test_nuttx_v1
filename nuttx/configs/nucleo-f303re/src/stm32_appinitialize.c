@@ -176,16 +176,8 @@ int board_app_initialize(uintptr_t arg)
 #ifdef CONFIG_QENCODER
   /* Initialize and register the qencoder driver */
 
-#if 0 /* FIXME : DEBUG : HACK GOLDO */
-  ret = stm32_qencoder_initialize("/dev/qe0", CONFIG_NUCLEO_F303RE_QETIMER);
-  if (ret != OK)
-    {
-      syslog(LOG_ERR,
-             "ERROR: Failed to register the qencoder: %d\n",
-             ret);
-      return ret;
-    }
-#else /* code pour goldobot */
+/* QEI pour goldobot */
+/* QEI1 : DROITE */
 #define QE0_TIM 1
   ret = stm32_qencoder_initialize("/dev/qe0", QE0_TIM);
   if (ret != OK)
@@ -195,7 +187,12 @@ int board_app_initialize(uintptr_t arg)
              QE0_TIM, ret);
       return ret;
     }
+/* QEI2 : GAUCHE */
+#if 0 /* FIXME : TODO : virer (conf AVANT ECO Jean) */
 #define QE1_TIM 8
+#else
+#define QE1_TIM 4
+#endif
   ret = stm32_qencoder_initialize("/dev/qe1", QE1_TIM);
   if (ret != OK)
     {
@@ -204,7 +201,6 @@ int board_app_initialize(uintptr_t arg)
              QE1_TIM, ret);
       return ret;
     }
-#endif
 #endif
 
   UNUSED(ret);
