@@ -58,10 +58,24 @@ unsigned char spi_buf_in[256];
  ****************************************************************************/
 #define SPI_FRAME_SZ 6
 
+void test_spi(unsigned int data)
+{
+  //volatile uint32_t *spi_dr = (uint32_t *) 0x4001300c;
+  volatile uint8_t *spi_dr = (uint8_t *) 0x4001300c;
+  volatile uint32_t *spi_sr = (uint32_t *) 0x40013008;
+
+  spi_buf_in[0] = *spi_dr;
+  while (((*spi_sr)&2)==0);
+  *spi_dr = (uint8_t) data;
+  //while (((*spi_sr)&1)==0);
+  spi_buf_in[0] = *spi_dr;
+}
+
 void send_spi_frame(void)
 {
   int i;
-  volatile uint32_t *spi_dr = (uint32_t *) 0x4001300c;
+  //volatile uint32_t *spi_dr = (uint32_t *) 0x4001300c;
+  volatile uint8_t *spi_dr = (uint8_t *) 0x4001300c;
   volatile uint32_t *spi_sr = (uint32_t *) 0x40013008;
 
   spi_buf_in[0] = *spi_dr;
@@ -165,6 +179,8 @@ int robot_master_spi_main(int argc, char *argv[])
 #endif
 {
   int is_write=0;
+  int is_read=0;
+  int is_test=0;
   unsigned int data = 0x42424242;
   unsigned int apb_addr;
 
@@ -184,8 +200,11 @@ int robot_master_spi_main(int argc, char *argv[])
     apb_addr = strtoul(argv[2], NULL, 16);
     data = strtoul(argv[3], NULL, 16);
   } else if (argv[1][0]=='r') {
-    is_write=0;
+    is_read=1;
     apb_addr = strtoul(argv[2], NULL, 16);
+  } else if (argv[1][0]=='t') {
+    is_test=1;
+    data = strtoul(argv[2], NULL, 16);
   } else {
     usage(argv[0]);
     return 1;
@@ -194,9 +213,12 @@ int robot_master_spi_main(int argc, char *argv[])
   if (is_write==1) {
     master_spi_write_word (apb_addr, data);
     printf(" @0x%.8x : W 0x%.8x \n", apb_addr, data);
-  } else {
+  } else if (is_read==1) {
     master_spi_read_word (apb_addr, &data);
     printf(" @0x%.8x : R 0x%.8x \n", apb_addr, data);
+  } else if (is_test==1) {
+    printf(" TEST : data = 0x%.8x \n", data);
+    test_spi(data);
   }
 
   return 0;

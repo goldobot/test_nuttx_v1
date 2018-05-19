@@ -95,30 +95,36 @@ void stm32_spidev_initialize_goldo(void)
   //up_lowputc(0x0a); /* FIXME : DEBUG */
 
 #ifdef CONFIG_STM32_SPI1
+  up_lowputc('$'); /* FIXME : DEBUG */
   g_spi1 = stm32_spibus_initialize(1);
   if (!g_spi1)
     {
       spierr("ERROR: FAILED to initialize SPI port 1\n");
       up_lowputc('!'); /* FIXME : DEBUG */
     }
+  SPI_SETBITS(g_spi1, 8);
 #endif
 
 #ifdef CONFIG_STM32_SPI2
+  up_lowputc('$'); /* FIXME : DEBUG */
   g_spi2 = stm32_spibus_initialize(2);
   if (!g_spi2)
     {
       spierr("ERROR: FAILED to initialize SPI port 2\n");
       up_lowputc('!'); /* FIXME : DEBUG */
     }
+  SPI_SETBITS(g_spi2, 8);
 #endif
 
 #ifdef CONFIG_STM32_SPI3
+  up_lowputc('$'); /* FIXME : DEBUG */
   g_spi3 = stm32_spibus_initialize(3);
   if (!g_spi3)
     {
       spierr("ERROR: FAILED to initialize SPI port 3\n");
       up_lowputc('!'); /* FIXME : DEBUG */
     }
+  SPI_SETBITS(g_spi3, 8);
 #endif
 
   //up_lowputc(0x0a); /* FIXME : DEBUG */

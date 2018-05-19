@@ -1712,7 +1712,8 @@ static void spi_bus_initialize(FAR struct stm32_spidev_s *priv)
 
   /* FIXME : DEBUG : TEST GOLDO */
   //spi_setfrequency((FAR struct spi_dev_s *)priv, 400000);
-  spi_setfrequency((FAR struct spi_dev_s *)priv, 20000000);
+  //spi_setfrequency((FAR struct spi_dev_s *)priv, 20000000);
+  spi_setfrequency((FAR struct spi_dev_s *)priv, 5000000);
 
   /* CRCPOLY configuration */
 
