@@ -851,6 +851,7 @@ int main_loop_test_fpga(void)
   int result;
 
   while(1) {
+    printf("\n");
     printf("FPGA test\n");
     printf("\n");
     printf("Get version (v), Cmd servo (s), Cmd motor/pump (m), Cmd stepper (t), Quit (q)\n");
@@ -894,6 +895,7 @@ int main_loop_test_fpga(void)
           printf("%u          \r", position);
           usleep(200000);
         } while (new_pos!=position);
+        printf("\n");
         break;
 
       case 'q':

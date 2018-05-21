@@ -246,6 +246,7 @@ int goldo_fpga_get_stepper_pos (int stp_id, unsigned int *new_pos)
   if (result!=0) {
     return result;
   }
+  *new_pos = (*new_pos)>>16;
 
   return 0;
 }
