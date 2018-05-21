@@ -8,6 +8,7 @@
 #include "robot/goldo_adversary_detection.h"
 #include "robot/goldo_arms.h"
 #include "goldo_dynamixels.h"
+#include "goldo_fpga.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -536,7 +537,7 @@ int main_loop_test_asserv(void)
 
   goldo_asserv_straight_line(0.5, 0.5, 0.5, 0.5);
   goldo_asserv_straight_line(-0.5, 0.5, 0.5, 0.5);
-   getchar();
+  getchar();
   goldo_asserv_wait_finished();
   sleep(10);
   printf("finished movement sequence\n");
@@ -839,3 +840,66 @@ int main_loop_test_arms(void)
     }
   }
 }
+
+int main_loop_test_fpga(void)
+{
+  int id;
+  int position;
+  char command;
+  unsigned int fpga_version;
+  unsigned int new_pos=0;
+  int result;
+
+  while(1) {
+    printf("FPGA test\n");
+    printf("\n");
+    printf("Get version (v), Cmd servo (s), Cmd motor/pump (m), Cmd stepper (t), Quit (q)\n");
+    get_char_value("Command: ",&command);
+    switch(command)
+    {
+      case 'v':
+        fpga_version = goldo_fpga_get_version ();
+        printf("  FPGA version = %x\n", fpga_version);
+        break;
+      case 's':
+        get_int_value("Servo Id: ",&id);
+        get_int_value("Position: ",&position);
+        if (goldo_fpga_cmd_servo(id, (unsigned int)position)!=0) {
+          printf("  Error!\n");
+          return -1;
+        }
+        break;
+      case 'm':
+        get_int_value("Motor Id: ",&id);
+        get_int_value("High PWM phase duration: ",&position);
+        if (goldo_fpga_cmd_motor(id, position)!=0) {
+          printf("  Error!\n");
+          return -1;
+        }
+        break;
+      case 't':
+        new_pos=0;
+        get_int_value("Stepper Id: ",&id);
+        get_int_value("Position: ",&new_pos);
+        if (goldo_fpga_cmd_stepper(id, new_pos)!=0) {
+          printf("  Error!\n");
+          return -1;
+        }
+        printf("\n");
+        do {
+          if (goldo_fpga_get_stepper_pos(id, &position)!=0) {
+            printf("  Error!\n");
+            return -1;
+          }
+          printf("%u          \r", position);
+          usleep(200000);
+        } while (new_pos!=position);
+        break;
+
+      case 'q':
+        return OK;
+        break;
+    }
+  }
+}
+

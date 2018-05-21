@@ -115,10 +115,22 @@ static int run_mode=0;
 static void goldorak_go_help(void)
 {
 
-  printf("Usage: goldorak_go <x> <y> <theta>\n");
-  printf("         go to point <x, y> and then turn to align with direction <theta>\n");
-  printf("       goldorak_go [-h]\n");
-  printf("          -h = shows this message and exits\n");
+  printf("Usage: goldorak_go <subcommand>\n");
+  printf("  subcommand can be:\n");
+  printf("    match\n");
+  printf("    homologation\n");
+  printf("    test_odometry\n");
+  printf("    test_motors\n");
+  printf("    test_asserv\n");
+  printf("    test_dynamixels\n");
+  printf("    test_arms\n");
+  printf("    test_match\n");
+  printf("    test_fpga\n");
+  printf("    utest_start_match\n");
+  printf("    utest_adversary_detection\n");
+  printf("    utest_match_timer\n");
+  printf("    utest_funny_action\n");
+  printf("    -h = shows this message and exits\n");
 }
 
 /****************************************************************************
@@ -175,9 +187,14 @@ static void parse_args(int argc, FAR char **argv)
     run_mode = GOLDO_MODE_TEST_ARMS;
     return;
   }
-   if (strcmp(ptr,"test_match")==0)
+  if (strcmp(ptr,"test_match")==0)
   {
     run_mode = GOLDO_MODE_TEST_MATCH;
+    return;
+  }
+  if (strcmp(ptr,"test_fpga")==0)
+  {
+    run_mode = GOLDO_MODE_TEST_FPGA;
     return;
   }
   if (strcmp(ptr,"utest_start_match")==0)
@@ -247,8 +264,11 @@ int goldorak_go_main(int argc, char *argv[])
     case GOLDO_MODE_TEST_ARMS:
       main_loop_test_arms();
       break;
-     case GOLDO_MODE_TEST_MATCH:
+    case GOLDO_MODE_TEST_MATCH:
       main_loop_test_match();
+      break;
+    case GOLDO_MODE_TEST_FPGA:
+      main_loop_test_fpga();
       break;
     case GOLDO_MODE_UTEST_START_MATCH:
       main_loop_utest_start_match();
