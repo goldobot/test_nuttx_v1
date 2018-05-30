@@ -897,6 +897,20 @@ int main_loop_test_fpga(void)
         } while (new_pos!=position);
         printf("\n");
         break;
+      case 'c':
+        get_int_value("Column Id: ",&id);
+        if (goldo_fpga_columns_move(id)!=0) {
+          printf("  Error!\n");
+          return -1;
+        }
+        break;
+      case 'C':
+        get_int_value("BEWARE! Column calibration! ",&id);
+        if (goldo_fpga_columns_calib()!=0) {
+          printf("  Error!\n");
+          return -1;
+        }
+        break;
 
       case 'q':
         return OK;
