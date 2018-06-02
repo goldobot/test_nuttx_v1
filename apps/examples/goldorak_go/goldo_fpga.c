@@ -220,7 +220,7 @@ int goldo_fpga_cmd_stepper (int stp_id, unsigned int new_pos)
   int result;
   unsigned int apb_addr = 0x80008008;
 
-  if ((stp_id<0) || (stp_id>1) || (new_pos>0x00010000)) {
+  if ((stp_id<0) || (stp_id>1)) {
     return -1;
   }
 

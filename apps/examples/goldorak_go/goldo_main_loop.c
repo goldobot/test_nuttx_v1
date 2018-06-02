@@ -854,7 +854,7 @@ int main_loop_test_fpga(void)
     printf("\n");
     printf("FPGA test\n");
     printf("\n");
-    printf("Get version (v), Cmd servo (s), Cmd motor/pump (m), Cmd stepper (t), Quit (q)\n");
+    printf("Get version (v), Cmd servo (s), Cmd motor/pump (m), Cmd stepper (t), Read col. switch (r), Change col. (c), Calib col. (C), Arret urg. (!), Quit (q)\n");
     get_char_value("Command: ",&command);
     switch(command)
     {
@@ -872,6 +872,9 @@ int main_loop_test_fpga(void)
         break;
       case 'm':
         get_int_value("Motor Id: ",&id);
+        printf("  0 = right pump\n");
+        printf("  1 = left pump\n");
+        printf("  2 = conveyor belt\n");
         get_int_value("High PWM phase duration: ",&position);
         if (goldo_fpga_cmd_motor(id, position)!=0) {
           printf("  Error!\n");
@@ -879,8 +882,13 @@ int main_loop_test_fpga(void)
         }
         break;
       case 't':
+        id=0;
         new_pos=0;
-        get_int_value("Stepper Id: ",&id);
+        if (goldo_fpga_get_stepper_pos(id, &position)!=0) {
+          printf("  Error! Cannot get stepper pos\n");
+        }
+        printf("  Current pos = %u\n", position);
+        //get_int_value("Stepper Id: ",&id);
         get_int_value("Position: ",&new_pos);
         if (goldo_fpga_cmd_stepper(id, new_pos)!=0) {
           printf("  Error!\n");
@@ -897,6 +905,13 @@ int main_loop_test_fpga(void)
         } while (new_pos!=position);
         printf("\n");
         break;
+      case 'r':
+        if (goldo_fpga_master_spi_read_word(0x800084e0, &position)!=0) {
+          printf("  Error! Cannot read column switch\n");
+        }
+        position &= 1;
+        printf("  Column Switch = %d\n", position);
+        break;
       case 'c':
         get_int_value("Column Id: ",&id);
         if (goldo_fpga_columns_move(id)!=0) {
@@ -910,6 +925,26 @@ int main_loop_test_fpga(void)
           printf("  Error!\n");
           return -1;
         }
+        break;
+
+      case '!':
+        printf("Arret d'urgence !\n");
+        goldo_fpga_cmd_servo(0, 0);
+        goldo_fpga_cmd_servo(1, 0);
+        goldo_fpga_cmd_servo(2, 0);
+        goldo_fpga_cmd_servo(3, 0);
+        goldo_fpga_cmd_servo(4, 0);
+        goldo_fpga_cmd_servo(5, 0);
+        goldo_fpga_cmd_servo(6, 0);
+        goldo_fpga_cmd_servo(7, 0);
+        goldo_fpga_cmd_servo(8, 0);
+        goldo_fpga_cmd_servo(9, 0);
+        goldo_fpga_cmd_servo(10, 0);
+        goldo_fpga_cmd_servo(11, 0);
+        goldo_fpga_cmd_motor(0, 0);
+        goldo_fpga_cmd_motor(1, 0);
+        goldo_fpga_cmd_motor(2, 0);
+        goldo_fpga_cmd_stepper(0, 0xffffffff);
         break;
 
       case 'q':

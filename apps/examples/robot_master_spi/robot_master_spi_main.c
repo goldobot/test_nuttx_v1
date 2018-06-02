@@ -99,6 +99,15 @@ unsigned char RMAP_CalculateCRC(unsigned char INCRC, unsigned char INBYTE)
   return RMAP_CRCTable[INCRC ^ INBYTE];
 }
 
+unsigned char RMAP_CalculateCRC_mod(unsigned char INCRC, unsigned char INBYTE)
+{
+  unsigned char x=INBYTE;
+  x = (x<<4) | (x>>4);
+  x = ((x & 0x33)<<2) | ((x & 0xcc)>>2);
+  x = ((x & 0x55)<<1) | ((x & 0xaa)>>1);
+  return RMAP_CRCTable[INCRC ^ x];
+}
+
 #define SPI_FRAME_SZ 6
 
 void test_spi(unsigned int data)
@@ -128,10 +137,17 @@ void send_spi_frame(void)
   for (i=0; i<SPI_FRAME_SZ; i++) {
     while (((*spi_sr)&2)==0);
     *spi_dr = spi_buf_out[i];
-    last_crc_out = RMAP_CalculateCRC(last_crc_out, spi_buf_out[i]);
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, spi_buf_out[i]);
     while (((*spi_sr)&1)==0);
     spi_buf_in[i] = *spi_dr;
-    last_crc_in = RMAP_CalculateCRC(last_crc_in, spi_buf_in[i]);
+    if (i==5) { /* FIXME : TODO : HACK : fix fpga! */
+      unsigned char x=spi_buf_in[i];
+      x = (x<<4) | (x>>4);
+      x = ((x & 0x33)<<2) | ((x & 0xcc)>>2);
+      x = ((x & 0x55)<<1) | ((x & 0xaa)>>1);
+      spi_buf_in[i] = x;
+    }
+    last_crc_in = RMAP_CalculateCRC_mod(last_crc_in, spi_buf_in[i]);
   }
   //while (((*spi_sr)&1)==0);
   spi_buf_in[SPI_FRAME_SZ] = *spi_dr;
@@ -280,12 +296,19 @@ int robot_master_spi_main(int argc, char *argv[])
     }
     printf("]\n");
   } else if (is_test==1) {
+    unsigned char tab_data[] = {0xff, 0x12, 0x34, 0x56, 0x78, 0x25};
     //printf(" TEST : data = 0x%.8x \n", data);
     //test_spi(data);
-    last_crc_out = RMAP_CalculateCRC(last_crc_out, 0xff);
-    printf(" last_crc_out = %.2x \n", last_crc_out);
-    printf(" RMAP_CRCTable[0x25] = %.2x \n", RMAP_CRCTable[0x25]);
-    printf(" RMAP_CRCTable[0xff] = %.2x \n", RMAP_CRCTable[0xff]);
+    //last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, (unsigned char)data);
+    //printf(" last_crc_out = %.2x \n", last_crc_out);
+    last_crc_out = 0;
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, tab_data[0]);
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, tab_data[1]);
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, tab_data[2]);
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, tab_data[3]);
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, tab_data[4]);
+    last_crc_out = RMAP_CalculateCRC_mod(last_crc_out, tab_data[5]);
+    printf(" last_crc_out(mod) = %.2x \n", last_crc_out);
   }
 
   return 0;
